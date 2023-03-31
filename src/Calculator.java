@@ -1,3 +1,5 @@
+import Exceptions.BufferOverflowException;
+
 import java.util.Stack;
 
 public class Calculator {
@@ -67,11 +69,12 @@ public class Calculator {
         valuesStack.push(val1);
     }
 
-    public double calculate(String example){
+    public double calculate(String expression){
         int i;
         String current, top;
 
-        parse(example);
+
+        parse(expression);
 
         for(i = 0; i <= lexemePtr; i++) {
             current = lexemeArr[i];
@@ -119,7 +122,7 @@ public class Calculator {
         return Double.parseDouble(valuesStack.peek());
     }
 
-    private void parse(String example){
+    private void parse(String expression){
         char symbol;
         int i;
         String tmp = "";
@@ -127,8 +130,8 @@ public class Calculator {
         lexemeArr = new String[200];
         for (i = 0; i < 200; i++) lexemeArr[i] = "";
         lexemePtr = 0;
-        for(i = 0; i < example.length(); i++){
-            symbol = example.charAt(i);
+        for(i = 0; i < expression.length(); i++){
+            symbol = expression.charAt(i);
 
             switch(symbol){
                 case '+':

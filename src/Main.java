@@ -215,8 +215,16 @@ class Main
     public static Calculator calculator = new Calculator();
     public static void main(String [] args) {
 
-        var result = calculator.calculate("9+6*5-7.5/8");
-        System.out.println(result);
+        try{
+            var expression = "9+6*5-7.5/8";
+            Checker.checkExpression(expression);
+            var result = calculator.calculate(expression);
+            System.out.println(result);
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
+
         /*String F="5+5";
         Calculate(F);
         System.out.println(F+"="+popVal());*/
