@@ -212,13 +212,14 @@ class Main
         if (Tmp.length() > 0) Lex[ptrL]=Tmp;
     }
 
-    public static void main(String [] args)
+    public static Calculator calculator = new Calculator();
+    public static void main(String [] args) {
 
-    {
-        int i;
-        String F="5+5";
+        var result = calculator.calculate("9+6*5-7.5/8");
+        System.out.println(result);
+        /*String F="5+5";
         Calculate(F);
-        System.out.println(F+"="+popVal());
+        System.out.println(F+"="+popVal());*/
     }
 
 }
