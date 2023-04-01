@@ -1,3 +1,5 @@
+package Services;
+
 import Exceptions.BufferOverflowException;
 
 import java.util.Stack;
@@ -17,9 +19,6 @@ public class Calculator {
         int result = -1;
         switch (op)
         {
-            case "(":
-                result = 0;
-                break;
             case "+":
             case "-":
                 result = 1;
@@ -80,9 +79,6 @@ public class Calculator {
             current = lexemeArr[i];
 
             switch (current) {
-                case "(":
-                    operandsStack.push(current);
-                    break;
                 case "+":
                 case "-":
                 case "*":
@@ -101,16 +97,6 @@ public class Calculator {
                         operandsStack.push(current);
                         break;
                     }
-                case ")":
-                    while (true) {
-                        top = operandsStack.peek();
-                        if (top.equals("(")) {
-                            top = operandsStack.pop();
-                            break;
-                        }
-                        execute();
-                    }
-                    break;
                 default:
                     valuesStack.push(current);
             }
@@ -139,8 +125,6 @@ public class Calculator {
                 case '*':
                 case '^':
                 case '/':
-                case '(':
-                case ')':
                     if (tmp.length() > 0){
                         lexemeArr[lexemePtr++]=tmp;
                         tmp="";
