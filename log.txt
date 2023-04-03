@@ -1,0 +1,3 @@
+5*5
+КОРОВА
+The expression you entered contains an unrecognized character.
