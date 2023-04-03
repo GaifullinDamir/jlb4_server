@@ -79,6 +79,7 @@ public class TCPServer implements ITCPConnectionListener {
 
     private void installInitialValues(String port) {
         try {
+            System.out.println("Server journal file path: ");
             logPath = stdin.readLine();
             PORT = Integer.parseInt(port);
             System.out.println(PORT);
