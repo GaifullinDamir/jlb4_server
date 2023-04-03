@@ -51,13 +51,19 @@ public class TCPServer implements ITCPConnectionListener {
 
     @Override
     public synchronized void onReceiveString(TCPConnection tcpConnection, String receivedStr) {
-        System.out.println(receivedStr);
-        Calculator calc = new Calculator();
-
-        System.out.println(calc.calculate(receivedStr));
-        log(receivedStr);
-
-
+        try{
+            log(receivedStr);
+            System.out.println(receivedStr);
+            Checker.checkExpression(receivedStr);
+            Calculator calc = new Calculator();
+            var result = Double.toString(calc.calculate(receivedStr));
+            System.out.println("Результат вычисления: " + result);
+            sendToConnection(tcpConnection, "Результат вычисления: " + result);
+        }catch(Exception e){
+            System.out.println(e);
+            sendToConnection(tcpConnection, e.toString());
+            log(e.toString());
+        }
     }
 
     @Override
@@ -72,13 +78,12 @@ public class TCPServer implements ITCPConnectionListener {
     }
 
     private void installInitialValues(String port) {
-        try /*BufferedReader serverPortFileReader = new BufferedReader(new FileReader("config.txt"))*/ {
-            System.out.print("server journal file path: ");
+        try {
             logPath = stdin.readLine();
-
             PORT = Integer.parseInt(port);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println(PORT);
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
@@ -89,64 +94,11 @@ public class TCPServer implements ITCPConnectionListener {
             serverJournalFileWriter.write('\n');
             serverJournalFileWriter.close();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
     }
 
     private void sendToConnection(TCPConnection tcpConnection, String str) {
         tcpConnection.sendMessage(str);
-    }
-
-    private <T> String arrayToString(T[][] initArr) {
-        String resultStr = "[";
-        for (T[] arr : initArr) {
-            resultStr += "[";
-            for (T obj : arr) {
-                resultStr += obj.toString() + ", ";
-            }
-            resultStr = resultStr.substring(0, resultStr.length() - 2);
-            resultStr += "], ";
-        }
-        resultStr = resultStr.substring(0, resultStr.length() - 2);
-        resultStr += "]";
-
-        return resultStr;
-    }
-
-    private <T> void readCell(T[][] arr, TCPConnection tcpConnection, Integer externalIndex, Integer internalIndex) {
-        if (externalIndex < arr.length) {
-            if (internalIndex < arr[externalIndex].length) {
-                sendToConnection(tcpConnection, "arr["
-                        + externalIndex
-                        + "]["
-                        + internalIndex
-                        + "] = "
-                        + arr[externalIndex][internalIndex]);
-            } else {
-                sendToConnection(tcpConnection, "WRONG INTERNAL INDEX!");
-            }
-        } else {
-            sendToConnection(tcpConnection, "WRONG EXTERNAL INDEX!");
-        }
-    }
-
-    private <T> void writeCell(T[][] arr, Integer[] forbiddenRange, TCPConnection tcpConnection, Integer externalIndex, Integer internalIndex, T value) {
-        if (externalIndex < arr.length) {
-            if (internalIndex < arr[externalIndex].length) {
-                if (!(externalIndex == forbiddenRange[0] && internalIndex >= forbiddenRange[1] && internalIndex <= forbiddenRange[2])) {
-                    sendToConnection(tcpConnection, "\nold arr:\n"
-                            + arrayToString(arr));
-                    arr[externalIndex][internalIndex] = value;
-                    sendToConnection(tcpConnection, "\nnew arr:\n"
-                            + arrayToString(arr) + "\n");
-                } else {
-                    sendToConnection(tcpConnection, "PERMISSION ERROR!");
-                }
-            } else {
-                sendToConnection(tcpConnection, "WRONG INTERNAL INDEX!");
-            }
-        } else {
-            sendToConnection(tcpConnection, "WRONG EXTERNAL INDEX!");
-        }
     }
 }
